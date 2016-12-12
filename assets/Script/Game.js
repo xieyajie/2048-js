@@ -6,7 +6,9 @@ cc.Class({
         tiles: [],
         manager: {
             default: null
-        }
+        },
+        mapBackground: cc.Sprite,
+        labelBackground: cc.Prefab,
     },
 
     // use this for initialization
@@ -27,6 +29,29 @@ cc.Class({
             ];
         }
 
+        this.setupMapBackground();
+    },
+
+    /**
+     * 设置游戏背景
+     */
+    setupMapBackground: function () {
+        let bgSize = this.mapBackground.node.width;
+        let labelInstance = cc.instantiate(this.labelBackground);
+        let labelSize = labelInstance.width;
+
+        let spaceSize = (bgSize - (4 * labelSize)) / 5;
+        for (let i = 0; i < 4; i++) {
+            for (let j = 0; j < 4; j++) {
+                let origin = -(bgSize / 2) + (labelSize / 2);
+                let x = origin + spaceSize + i * (spaceSize + labelSize);
+                let y = origin + spaceSize + j * (spaceSize + labelSize);
+
+                let label = cc.instantiate(this.labelBackground);
+                label.setPosition(x, y);
+                this.mapBackground.node.addChild(label);
+            }
+        }
     },
 
     moveUp: function () {
