@@ -10,7 +10,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "item",
+    "_name": "tile",
     "_objFlags": 0,
     "_opacity": 255,
     "_color": {
@@ -215,6 +215,8 @@
     },
     "_enabled": true,
     "level": 0,
+    "row": 0,
+    "col": 0,
     "label": {
       "__id__": 3
     }
