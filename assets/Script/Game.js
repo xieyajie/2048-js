@@ -4,20 +4,22 @@ cc.Class({
     properties: {
         background: cc.Sprite,
         tiles: [],
-
+        manager: {
+            default: null
+        }
     },
 
     // use this for initialization
     onLoad: function () {
-        var Manager = require("Manager");
-        if (Manager.cardinality == 2) {
+        this.manager = require("Manager");
+        if (this.manager.cardinality == 2) {
             this.tiles = [
                 [null, null, null, null],
                 [null, null, null, null],
                 [null, null, null, null],
                 [null, null, null, null]
             ];
-        } else if (Manager.cardinality == 3) {
+        } else if (this.manager.cardinality == 3) {
             this.tiles = [
                 [null, null, null],
                 [null, null, null],
@@ -27,17 +29,15 @@ cc.Class({
 
     },
 
-    // called every frame, uncomment this function to activate update callback
-    update: function (dt) {
-
-    },
-
     moveUp: function () {
+        let rows = this.manager.getRowCount();
+        let cols = this.manager.getColCount();
+
         var isMoved = false;
-        for (var col = 0; col < 4; col++) {
-            for (var row = 3; row >= 0; row--) {
+        for (var col = 0; col < cols; col++) {
+            for (var row = (rows - 1); row >= 0; row--) {
                 if (tiles[row][col] != null) {// 有方块
-                    for (var row1 = row; row1 < 3; row1++) {
+                    for (var row1 = row; row1 < (rows - 1); row1++) {
                         if (tiles[row1 + 1][col] == null)//如果没有向上移动
                         {
                             tiles[row1 + 1][col] = tiles[row1][col];
@@ -60,9 +60,12 @@ cc.Class({
     },
 
     moveDown: function () {
+        let rows = this.manager.getRowCount();
+        let cols = this.manager.getColCount();
+
         var isMoved = false;
-        for (var col = 0; col < 4; col++) {
-            for (var row = 0; row < 4; row++) {
+        for (var col = 0; col < cols; col++) {
+            for (var row = 0; row < rows; row++) {
                 if (tiles[row][col] != null) {// 有方块
                     for (var row1 = row; row1 > 0; row1--) {
                         if (tiles[row1 - 1][col] == null)//如果没有向下移动
@@ -87,9 +90,12 @@ cc.Class({
     },
 
     moveLeft: function () {
+        let rows = this.manager.getRowCount();
+        let cols = this.manager.getColCount();
+
         var isMoved = false;
-        for (var row = 0; row < 4; row++) {
-            for (var col = 0; col < 4; col++) {
+        for (var row = 0; row < rows; row++) {
+            for (var col = 0; col < cols; col++) {
                 if (tiles[row][col] != null) {
                     for (var col1 = col; col1 > 0; col1--) {
                         if (tiles[row][col1 - 1] == null) {
@@ -113,11 +119,14 @@ cc.Class({
     },
 
     moveRight: function () {
+        let rows = this.manager.getRowCount();
+        let cols = this.manager.getColCount();
+
         var isMoved = false;
-        for (var row = 0; row < 4; row++) {
-            for (var col = 3; col >= 0; col--) {
+        for (var row = 0; row < rows; row++) {
+            for (var col = (cols - 1); col >= 0; col--) {
                 if (tiles[row][col] != null) {
-                    for (var col1 = col; col1 < 3; col1++) {
+                    for (var col1 = col; col1 < (cols - 1); col1++) {
                         if (tiles[row][col1 + 1] == null) {
                             tiles[row][col1 + 1] = tiles[row][col1];
                             tiles[row][col1] = null;

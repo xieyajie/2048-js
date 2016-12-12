@@ -1,30 +1,12 @@
 cc.Class({
     extends: cc.Component,
 
-    properties: {
-        _tiles:[],
-    },
-
-    // use this for initialization
-    onLoad: function () {
-
-    },
-
-    // called every frame, uncomment this function to activate update callback
-    // update: function (dt) {
-
-    // },
-
     statics: {
         cardinality: 2,
 
         tileSize:{
             width: 130,
             height: 130
-        },
-
-        init:function () {
-
         },
 
         backgroundColor: function () {
@@ -106,9 +88,33 @@ cc.Class({
 
             return retColor;
         },
-        
-        moveTo:function (fromRow, fromCol, toRow, toCol) {
-            
+
+        getRowCount:function () {
+            var num = 4;
+            switch (this.cardinality) {
+                case 3:
+                    num = 3;
+                    break;
+                case 5:
+                    num = 5;
+                    break;
+            }
+
+            return num;
+        },
+
+        getColCount:function () {
+            var num = 4;
+            switch (this.cardinality) {
+                case 3:
+                    num = 3;
+                    break;
+                case 5:
+                    num = 5;
+                    break;
+            }
+
+            return num;
         }
         
     }
