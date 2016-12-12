@@ -30,10 +30,11 @@ cc.Class({
         }
 
         this.setupMapBackground();
+        this.setupEventListener();
     },
 
     /**
-     * 设置游戏背景
+     * 初始化游戏背景
      */
     setupMapBackground: function () {
         let bgSize = this.mapBackground.node.width;
@@ -54,6 +55,43 @@ cc.Class({
         }
     },
 
+    /**
+     * 初始化系统事件监听
+     */
+    setupEventListener: function () {
+        cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+    },
+
+    /**
+     * 键盘按钮抬起时的事件响应
+     * @param event
+     */
+    onKeyUp: function (event) {
+        switch (event.keyCode) {
+            case cc.KEY.up: {
+                this.moveUp();
+                break;
+            }
+            case cc.KEY.down: {
+                this.moveDown();
+                break;
+            }
+            case cc.KEY.left: {
+                this.moveLeft();
+                break;
+            }
+            case cc.KEY.right: {
+                this.moveRight();
+                break;
+            }
+        }
+    },
+
+    // called every frame, uncomment this function to activate update callback
+    update: function (dt) {
+
+    },
+
     moveUp: function () {
         let rows = this.manager.getRowCount();
         let cols = this.manager.getColCount();
@@ -61,19 +99,19 @@ cc.Class({
         var isMoved = false;
         for (var col = 0; col < cols; col++) {
             for (var row = (rows - 1); row >= 0; row--) {
-                if (tiles[row][col] != null) {// 有方块
+                if (this.tiles[row][col] != null) {// 有方块
                     for (var row1 = row; row1 < (rows - 1); row1++) {
-                        if (tiles[row1 + 1][col] == null)//如果没有向上移动
+                        if (this.tiles[row1 + 1][col] == null)//如果没有向上移动
                         {
-                            tiles[row1 + 1][col] = tiles[row1][col];
-                            tiles[row1][col] = null;
-                            tiles[row1 + 1][col].moveTo(row1 + 1, col);
+                            this.tiles[row1 + 1][col] = this.tiles[row1][col];
+                            this.tiles[row1][col] = null;
+                            this.tiles[row1 + 1][col].moveTo(row1 + 1, col);
                             isMoved = true;
-                        } else if (tiles[row1 + 1][col].num == tiles[row1][col].num) {// 合并
-                            tiles[row1 + 1][col].num = parseInt(tiles[row1][col].num) * 2;
-                            tiles[row1 + 1][col].updateNum();
-                            tiles[row1][col].removeFromParent();
-                            tiles[row1][col] = null;
+                        } else if (this.tiles[row1 + 1][col].num == this.tiles[row1][col].num) {// 合并
+                            this.tiles[row1 + 1][col].num = parseInt(this.tiles[row1][col].num) * 2;
+                            this.tiles[row1 + 1][col].updateNum();
+                            this.tiles[row1][col].removeFromParent();
+                            this.tiles[row1][col] = null;
                             isMoved = true;
                             break;
                         }
@@ -91,19 +129,19 @@ cc.Class({
         var isMoved = false;
         for (var col = 0; col < cols; col++) {
             for (var row = 0; row < rows; row++) {
-                if (tiles[row][col] != null) {// 有方块
+                if (this.tiles[row][col] != null) {// 有方块
                     for (var row1 = row; row1 > 0; row1--) {
-                        if (tiles[row1 - 1][col] == null)//如果没有向下移动
+                        if (this.tiles[row1 - 1][col] == null)//如果没有向下移动
                         {
-                            tiles[row1 - 1][col] = tiles[row1][col];
-                            tiles[row1][col] = null;
-                            tiles[row1 - 1][col].moveTo(row1 - 1, col);
+                            this.tiles[row1 - 1][col] = this.tiles[row1][col];
+                            this.tiles[row1][col] = null;
+                            this.tiles[row1 - 1][col].moveTo(row1 - 1, col);
                             isMoved = true;
-                        } else if (tiles[row1 - 1][col].num == tiles[row1][col].num) {// 合并
-                            tiles[row1 - 1][col].num = parseInt(tiles[row1][col].num) * 2;
-                            tiles[row1 - 1][col].updateNum();
-                            tiles[row1][col].removeFromParent();
-                            tiles[row1][col] = null;
+                        } else if (this.tiles[row1 - 1][col].num == this.tiles[row1][col].num) {// 合并
+                            this.tiles[row1 - 1][col].num = parseInt(this.tiles[row1][col].num) * 2;
+                            this.tiles[row1 - 1][col].updateNum();
+                            this.tiles[row1][col].removeFromParent();
+                            this.tiles[row1][col] = null;
                             isMoved = true;
                             break;
                         }
@@ -121,18 +159,18 @@ cc.Class({
         var isMoved = false;
         for (var row = 0; row < rows; row++) {
             for (var col = 0; col < cols; col++) {
-                if (tiles[row][col] != null) {
+                if (this.tiles[row][col] != null) {
                     for (var col1 = col; col1 > 0; col1--) {
-                        if (tiles[row][col1 - 1] == null) {
-                            tiles[row][col1 - 1] = tiles[row][col1];
-                            tiles[row][col1] = null;
-                            tiles[row][col1 - 1].moveTo(row, col1 - 1);
+                        if (this.tiles[row][col1 - 1] == null) {
+                            this.tiles[row][col1 - 1] = this.tiles[row][col1];
+                            this.tiles[row][col1] = null;
+                            this.tiles[row][col1 - 1].moveTo(row, col1 - 1);
                             isMoved = true;
-                        } else if (tiles[row][col1 - 1].num == tiles[row][col1].num) {// 合并
-                            tiles[row][col1 - 1].num = parseInt(tiles[row][col1].num) * 2;
-                            tiles[row][col1 - 1].updateNum();
-                            tiles[row][col1].removeFromParent();
-                            tiles[row][col1] = null;
+                        } else if (this.tiles[row][col1 - 1].num == this.tiles[row][col1].num) {// 合并
+                            this.tiles[row][col1 - 1].num = parseInt(this.tiles[row][col1].num) * 2;
+                            this.tiles[row][col1 - 1].updateNum();
+                            this.tiles[row][col1].removeFromParent();
+                            this.tiles[row][col1] = null;
                             isMoved = true;
                             break;
                         }
@@ -150,18 +188,18 @@ cc.Class({
         var isMoved = false;
         for (var row = 0; row < rows; row++) {
             for (var col = (cols - 1); col >= 0; col--) {
-                if (tiles[row][col] != null) {
+                if (this.tiles[row][col] != null) {
                     for (var col1 = col; col1 < (cols - 1); col1++) {
-                        if (tiles[row][col1 + 1] == null) {
-                            tiles[row][col1 + 1] = tiles[row][col1];
-                            tiles[row][col1] = null;
-                            tiles[row][col1 + 1].moveTo(row, col1 + 1);
+                        if (this.tiles[row][col1 + 1] == null) {
+                            this.tiles[row][col1 + 1] = this.tiles[row][col1];
+                            this.tiles[row][col1] = null;
+                            this.tiles[row][col1 + 1].moveTo(row, col1 + 1);
                             isMoved = true;
-                        } else if (tiles[row][col1 + 1].num == tiles[row][col1].num) {// 合并
-                            tiles[row][col1 + 1].num = parseInt(tiles[row][col1].num) * 2;
-                            tiles[row][col1 + 1].updateNum();
-                            tiles[row][col1].removeFromParent();
-                            tiles[row][col1] = null;
+                        } else if (this.tiles[row][col1 + 1].num == this.tiles[row][col1].num) {// 合并
+                            this.tiles[row][col1 + 1].num = parseInt(this.tiles[row][col1].num) * 2;
+                            this.tiles[row][col1 + 1].updateNum();
+                            this.tiles[row][col1].removeFromParent();
+                            this.tiles[row][col1] = null;
                             isMoved = true;
                             break;
                         }

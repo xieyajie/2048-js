@@ -318,6 +318,7 @@
       "__id__": 6
     },
     "tiles": [],
+    "manager": null,
     "mapBackground": {
       "__id__": 5
     },
