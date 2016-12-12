@@ -11,18 +11,18 @@ cc.Class({
     onLoad: function () {
         var Manager = require("Manager");
         if (Manager.cardinality == 2) {
-            tiles = [
-                [null, null, null, null],
-                [null, null, null, null],
-                [null, null, null, null],
-                [null, null, null, null]
-            ];
+            // tiles = [
+            //     [null, null, null, null],
+            //     [null, null, null, null],
+            //     [null, null, null, null],
+            //     [null, null, null, null]
+            // ];
         } else if (Manager.cardinality == 3) {
-            tiles = [
-                [null, null, null],
-                [null, null, null],
-                [null, null, null]
-            ];
+            // tiles = [
+            //     [null, null, null],
+            //     [null, null, null],
+            //     [null, null, null]
+            // ];
         }
 
     },
