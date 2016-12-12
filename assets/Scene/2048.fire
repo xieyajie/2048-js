@@ -165,9 +165,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 182,
-      "g": 168,
-      "b": 168,
+      "r": 219,
+      "g": 203,
+      "b": 203,
       "a": 255
     },
     "_cascadeOpacityEnabled": true,
@@ -200,7 +200,7 @@
     "_globalZOrder": 0,
     "_tag": -1,
     "_opacityModifyRGB": false,
-    "_id": "ac92btFuLpLyJkJjnhF5DUP",
+    "_id": "2f649xMrdxIM7FRKUUFKIh7",
     "_active": true,
     "_components": [
       {
