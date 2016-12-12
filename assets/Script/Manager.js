@@ -19,8 +19,8 @@ cc.Class({
         cardinality: 2,
 
         tileSize:{
-            width: 100,
-            height: 100
+            width: 130,
+            height: 130
         },
 
         init:function () {
