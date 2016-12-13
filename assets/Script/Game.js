@@ -154,16 +154,21 @@ cc.Class({
         for (var col = 0; col < cols; col++) {
             for (var row = (rows - 1); row >= 0; row--) {
                 if (this.tiles[row][col] != null) {// 有方块
+                    var nextTile = this.tiles[row1 + 1][col];
+
                     for (var row1 = row; row1 < (rows - 1); row1++) {
-                        if (this.tiles[row1 + 1][col] == null)//如果没有向上移动
-                        {
-                            this.tiles[row1 + 1][col] = this.tiles[row1][col];
+                        if (nextTile == null) { //如果没有向上移动
+                            nextTile = this.tiles[row1][col];
                             this.tiles[row1][col] = null;
-                            this.setTilePosition(this.tiles[row1 + 1][col], row1 + 1, col);
+                            this.setTilePosition(nextTile, row1 + 1, col);
                             isMoved = true;
-                        } else if (this.tiles[row1 + 1][col].level == this.tiles[row1][col].level) {// 合并
-                            this.tiles[row1 + 1][col].level += 1;
-                            this.tiles[row1 + 1][col].updateLevel();
+                            continue;
+                        }
+
+                        var nextNode = nextTile.getComponent('Tile');
+                        if (nextNode.tag == this.tiles[row1][col].getComponent('Tile').tag) {// 合并
+                            nextNode.tag += 1;
+                            nextNode.updateLevel();
                             this.tiles[row1][col].removeFromParent();
                             this.tiles[row1][col] = null;
                             isMoved = true;
@@ -181,53 +186,24 @@ cc.Class({
         let cols = this.manager.getColCount();
         var isMoved = false;
 
-
-        // for (var col = 0; col < cols; col++) {
-        //     var tagRow = rows - 1;
-        //     var tagTile = this.tiles[tagRow][col];
-        //     for (var row = (rows - 2); row >= 0; row--) {
-        //         var tile = this.tiles[row][col];
-        //         if (tile == null) {
-        //             continue;
-        //         } else if (tagTile == null) {
-        //             this.setTilePosition(tile, tagRow, col);
-        //             this.tiles[tagRow][col] = tile;
-        //             this.tiles[row][col] = null;
-        //             isMoved = true;
-        //             continue;
-        //         }
-        //     //
-        //     //     if (tile.level == tagTile.level) { //合并到tagTile，tagTile上移一格
-        //     //         tagTile.level += 1;
-        //     //         tagTile.updateLevel();
-        //     //         tile.removeFromParent();
-        //     //         this.tiles[row][col] = null;
-        //     //
-        //     //         tagRow += 1;
-        //     //         tagTile = this.tiles[tagRow][col];
-        //     //         isMoved = true;
-        //     //     } else {
-        //     //         tagRow = row;
-        //     //         tagTile = this.tiles[tagRow][col];
-        //     //     }
-        //     }
-        // }
-        //
-        // return isMoved;
-
         for (var col = 0; col < cols; col++) {
             for (var row = 0; row < rows; row++) {
                 if (this.tiles[row][col] != null) {// 有方块
                     for (var row1 = row; row1 > 0; row1--) {
-                        if (this.tiles[row1 - 1][col] == null)//如果没有向下移动
-                        {
-                            this.tiles[row1 - 1][col] = this.tiles[row1][col];
+                        var nextTile = this.tiles[row1 - 1][col];
+
+                        if (nextTile == null) {  //如果没有向下移动
+                            nextTile = this.tiles[row1][col];
                             this.tiles[row1][col] = null;
-                            this.setTilePosition(this.tiles[row1 - 1][col], row1 - 1, col);
+                            this.setTilePosition(nextTile, row1 - 1, col);
                             isMoved = true;
-                        } else if (this.tiles[row1 - 1][col].level == this.tiles[row1][col].level) {// 合并
-                            this.tiles[row1 - 1][col].level += 1;
-                            this.tiles[row1 - 1][col].updateLevel();
+                            continue;
+                        }
+
+                        var nextNode = nextTile.getComponent('Tile');
+                        if (nextNode.tag == this.tiles[row1][col].getComponent('Tile').tag) {// 合并
+                            nextNode.tag += 1;
+                            nextNode.getComponent('Tile').updateLevel();
                             this.tiles[row1][col].removeFromParent();
                             this.tiles[row1][col] = null;
                             isMoved = true;
@@ -248,15 +224,21 @@ cc.Class({
         for (var row = 0; row < rows; row++) {
             for (var col = 0; col < cols; col++) {
                 if (this.tiles[row][col] != null) {
+                    var nextTile = this.tiles[row][col1 - 1];
+
                     for (var col1 = col; col1 > 0; col1--) {
-                        if (this.tiles[row][col1 - 1] == null) {
-                            this.tiles[row][col1 - 1] = this.tiles[row][col1];
+                        if (nextTile == null) {
+                            nextTile = this.tiles[row][col1];
                             this.tiles[row][col1] = null;
-                            this.setTilePosition(this.tiles[row][col1 - 1], row, col1 - 1);
+                            this.setTilePosition(nextTile, row, col1 - 1);
                             isMoved = true;
-                        } else if (this.tiles[row][col1 - 1].level == this.tiles[row][col1].level) {// 合并
-                            this.tiles[row][col1 - 1].level += 1;
-                            this.tiles[row][col1 - 1].updateLevel();
+                            continue;
+                        }
+
+                        var nextNode = nextTile.getComponent('Tile');
+                        if (nextNode.tag == this.tiles[row][col1].getComponent('Tile').tag) {// 合并
+                            nextNode.tag += 1;
+                            nextNode.updateLevel();
                             this.tiles[row][col1].removeFromParent();
                             this.tiles[row][col1] = null;
                             isMoved = true;
@@ -277,15 +259,21 @@ cc.Class({
         for (var row = 0; row < rows; row++) {
             for (var col = (cols - 1); col >= 0; col--) {
                 if (this.tiles[row][col] != null) {
+                    var nextTile = this.tiles[row][col1 + 1];
+
                     for (var col1 = col; col1 < (cols - 1); col1++) {
-                        if (this.tiles[row][col1 + 1] == null) {
-                            this.tiles[row][col1 + 1] = this.tiles[row][col1];
+                        if (nextTile == null) {
+                            nextTile = this.tiles[row][col1];
                             this.tiles[row][col1] = null;
-                            this.setTilePosition(this.tiles[row][col1 + 1], row, col1 + 1);
+                            this.setTilePosition(nextTile, row, col1 + 1);
                             isMoved = true;
-                        } else if (this.tiles[row][col1 + 1].level == this.tiles[row][col1].level) {// 合并
-                            this.tiles[row][col1 + 1].level += 1;
-                            this.tiles[row][col1 + 1].updateLevel();
+                            continue
+                        }
+
+                        var nextNode = nextTile.getComponent('Tile');
+                        if (nextNode.tag == this.tiles[row][col1].getComponent('Tile').tag) {// 合并
+                            nextNode.tag += 1;
+                            nextNode.updateLevel();
                             this.tiles[row][col1].removeFromParent();
                             this.tiles[row][col1] = null;
                             isMoved = true;

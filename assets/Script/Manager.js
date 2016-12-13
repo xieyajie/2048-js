@@ -21,10 +21,10 @@ cc.Class({
             return cc.color(119, 110, 101, 255);
         },
 
-        colorForLevel: function (toLevel) {
+        colorForTag: function (tag) {
             var retColor = cc.color(255, 255, 255, 255);
 
-            switch(toLevel) {
+            switch(tag) {
                 case 0: {
                     retColor = cc.color(238, 228, 218, 255);
                 }
@@ -75,10 +75,10 @@ cc.Class({
         },
 
 
-        textColorForLevel: function (toLevel) {
+        textColorForTag: function (tag) {
             var retColor = cc.color(255, 255, 255, 255);
 
-            switch(toLevel) {
+            switch(tag) {
                 case 0:
                 case 1: {
                     retColor = cc.color(118, 109, 100, 255);

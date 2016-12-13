@@ -2,7 +2,7 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        level: 0,
+        tag: 0,
         row: 0,
         col: 0,
 
@@ -15,7 +15,7 @@ cc.Class({
     // use this for initialization
     onLoad: function () {
         this.label.fontSize = 50;
-        this.setLevel(0);
+        this.setTag(0);
     },
 
     //called every frame, uncomment this function to activate update callback
@@ -23,21 +23,21 @@ cc.Class({
 
     },
     
-    setLevel:function(toLevel) {
-        this.level = toLevel;
+    setTag:function(toTag) {
+        this.tag = toTag;
 
-        this.updateLevel();
+        this.updateTag();
     },
 
-    updateLevel:function () {
+    updateTag:function () {
         var Manager = require("Manager");
-        var bgColor = Manager.colorForLevel(this.level);
+        var bgColor = Manager.colorForTag(this.tag);
         this.node.setColor(bgColor);
 
-        var textColor = Manager.textColorForLevel(this.level);
+        var textColor = Manager.textColorForTag(this.tag);
         this.label.node.color = textColor;
 
-        var num = Math.pow(Manager.cardinality, (this.level + 1));
+        var num = Math.pow(Manager.cardinality, (this.tag + 1));
         this.label.string = num.toString();
     },
     
