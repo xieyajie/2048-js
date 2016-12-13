@@ -113,7 +113,7 @@ cc.Class({
         }
 
         if (isMoved) {
-            // this.createRandomTile();
+            this.createRandomTile();
         }
     },
 
@@ -148,7 +148,7 @@ cc.Class({
 
     moveUp: function () {
         return this.moveTile(function (i, j) {
-            return [i, j];
+            return [3-i, j];
         }, function (row, col) {
             return [(row + 1 >= 4) ? -1 : (row + 1), col];
         });
@@ -172,7 +172,7 @@ cc.Class({
 
     moveRight: function () {
         return this.moveTile(function (i, j) {
-            return [j, i];
+            return [j, 3-i];
         }, function (row, col) {
             return [row, (col + 1 >= 4) ? -1 : (col + 1)];
         });
