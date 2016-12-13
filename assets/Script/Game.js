@@ -3,12 +3,18 @@ cc.Class({
 
     properties: {
         background: cc.Sprite,
-        tiles: [],
+        mapBackground: cc.Sprite,
+        labelBackground: cc.Prefab,
+
         manager: {
             default: null
         },
-        mapBackground: cc.Sprite,
-        labelBackground: cc.Prefab,
+        tiles: [],
+        tile: cc.Prefab,
+
+        tileOriginX: 0,
+        tileOriginY: 0,
+        tileSpace: 10,
     },
 
     // use this for initialization
@@ -33,35 +39,45 @@ cc.Class({
         this.setupEventListener();
     },
 
+    setTilePosition: function (tile, toRow, toCol) {
+        let x = this.tileOriginX + this.tileSpace + toCol * (this.tileSpace + this.manager.tileSize.width);
+        let y = this.tileOriginY + this.tileSpace + toRow * (this.tileSpace + this.manager.tileSize.height);
+        tile.setPosition(x, y);
+        tile.row = toRow;
+        tile.col = toCol;
+    },
+
     /**
-     * 初始化游戏背景
+     * 初始化游戏背景, 左下角是起点
      */
     setupMapBackground: function () {
         this.background.node.color = this.manager.backgroundColor();
         this.mapBackground.node.color = this.manager.scoreBoardColor();
 
-        let bgSize = this.mapBackground.node.width;
         let labelInstance = cc.instantiate(this.labelBackground);
-        let labelSize = labelInstance.width;
-
-        this.manager.tileSize.width = labelSize;
-        this.manager.tileSize.height = labelSize;
+        this.manager.tileSize.width = labelInstance.width;
+        this.manager.tileSize.height = labelInstance.height;
 
         let rows = this.manager.getRowCount();
         let cols = this.manager.getColCount();
 
-        let spaceSize = (bgSize - (cols * labelSize)) / (cols + 1);
+        let mapWidth = (this.manager.tileSize.width + this.tileSpace) * rows + this.tileSpace;
+        let mapHeight = (this.manager.tileSize.height + this.tileSpace) * cols + this.tileSpace;
+        this.mapBackground.node.width = mapWidth;
+        this.mapBackground.node.height = mapHeight;
+        this.tileOriginX = -1 * (mapWidth - this.manager.tileSize.width) / 2;
+        this.tileOriginY = -1 * (mapHeight - this.manager.tileSize.height) / 2;
+
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < cols; j++) {
-                let origin = -(bgSize / 2) + (labelSize / 2);
-                let x = origin + spaceSize + i * (spaceSize + labelSize);
-                let y = origin + spaceSize + j * (spaceSize + labelSize);
-
                 let label = cc.instantiate(this.labelBackground);
-                label.setPosition(x, y);
+                this.setTilePosition(label, i, j);
                 this.mapBackground.node.addChild(label);
             }
         }
+
+        this.createRandomTile();
+        this.createRandomTile();
     },
 
     /**
@@ -76,29 +92,58 @@ cc.Class({
      * @param event
      */
     onKeyUp: function (event) {
+        var isMoved = false;
         switch (event.keyCode) {
             case cc.KEY.up: {
-                this.moveUp();
+                isMoved = this.moveUp();
                 break;
             }
             case cc.KEY.down: {
-                this.moveDown();
+                isMoved = this.moveDown();
                 break;
             }
             case cc.KEY.left: {
-                this.moveLeft();
+                isMoved = this.moveLeft();
                 break;
             }
             case cc.KEY.right: {
-                this.moveRight();
+                isMoved = this.moveRight();
                 break;
             }
         }
+
+        if (isMoved) {
+            // this.createRandomTile();
+        }
     },
 
-    // called every frame, uncomment this function to activate update callback
-    update: function (dt) {
+    createRandomTile: function () {
+        var isCreated = true;
 
+        var count = 0;
+        let rows = this.manager.getRowCount();
+        let cols = this.manager.getColCount();
+        let totalCount = rows * cols;
+        var row;
+        var col;
+        while (true) {
+            count++;
+            row = Math.floor(Math.random() * rows);
+            col = Math.floor(Math.random() * cols);
+            if (this.tiles[row][col] == null) {
+                var tile = cc.instantiate(this.tile);
+                this.tiles[row][col] = tile;
+                this.setTilePosition(tile, row, col);
+                this.mapBackground.node.addChild(tile);
+                break;
+            }
+            if (count >= totalCount) {// 格子满了
+                isCreated = false;
+                break;
+            }
+        }
+
+        return isCreated;
     },
 
     moveUp: function () {
@@ -114,11 +159,11 @@ cc.Class({
                         {
                             this.tiles[row1 + 1][col] = this.tiles[row1][col];
                             this.tiles[row1][col] = null;
-                            this.tiles[row1 + 1][col].moveTo(row1 + 1, col);
+                            this.setTilePosition(this.tiles[row1 + 1][col], row1 + 1, col);
                             isMoved = true;
-                        } else if (this.tiles[row1 + 1][col].num == this.tiles[row1][col].num) {// 合并
-                            this.tiles[row1 + 1][col].num = parseInt(this.tiles[row1][col].num) * 2;
-                            this.tiles[row1 + 1][col].updateNum();
+                        } else if (this.tiles[row1 + 1][col].level == this.tiles[row1][col].level) {// 合并
+                            this.tiles[row1 + 1][col].level += 1;
+                            this.tiles[row1 + 1][col].updateLevel();
                             this.tiles[row1][col].removeFromParent();
                             this.tiles[row1][col] = null;
                             isMoved = true;
@@ -134,8 +179,42 @@ cc.Class({
     moveDown: function () {
         let rows = this.manager.getRowCount();
         let cols = this.manager.getColCount();
-
         var isMoved = false;
+
+
+        // for (var col = 0; col < cols; col++) {
+        //     var tagRow = rows - 1;
+        //     var tagTile = this.tiles[tagRow][col];
+        //     for (var row = (rows - 2); row >= 0; row--) {
+        //         var tile = this.tiles[row][col];
+        //         if (tile == null) {
+        //             continue;
+        //         } else if (tagTile == null) {
+        //             this.setTilePosition(tile, tagRow, col);
+        //             this.tiles[tagRow][col] = tile;
+        //             this.tiles[row][col] = null;
+        //             isMoved = true;
+        //             continue;
+        //         }
+        //     //
+        //     //     if (tile.level == tagTile.level) { //合并到tagTile，tagTile上移一格
+        //     //         tagTile.level += 1;
+        //     //         tagTile.updateLevel();
+        //     //         tile.removeFromParent();
+        //     //         this.tiles[row][col] = null;
+        //     //
+        //     //         tagRow += 1;
+        //     //         tagTile = this.tiles[tagRow][col];
+        //     //         isMoved = true;
+        //     //     } else {
+        //     //         tagRow = row;
+        //     //         tagTile = this.tiles[tagRow][col];
+        //     //     }
+        //     }
+        // }
+        //
+        // return isMoved;
+
         for (var col = 0; col < cols; col++) {
             for (var row = 0; row < rows; row++) {
                 if (this.tiles[row][col] != null) {// 有方块
@@ -144,11 +223,11 @@ cc.Class({
                         {
                             this.tiles[row1 - 1][col] = this.tiles[row1][col];
                             this.tiles[row1][col] = null;
-                            this.tiles[row1 - 1][col].moveTo(row1 - 1, col);
+                            this.setTilePosition(this.tiles[row1 - 1][col], row1 - 1, col);
                             isMoved = true;
-                        } else if (this.tiles[row1 - 1][col].num == this.tiles[row1][col].num) {// 合并
-                            this.tiles[row1 - 1][col].num = parseInt(this.tiles[row1][col].num) * 2;
-                            this.tiles[row1 - 1][col].updateNum();
+                        } else if (this.tiles[row1 - 1][col].level == this.tiles[row1][col].level) {// 合并
+                            this.tiles[row1 - 1][col].level += 1;
+                            this.tiles[row1 - 1][col].updateLevel();
                             this.tiles[row1][col].removeFromParent();
                             this.tiles[row1][col] = null;
                             isMoved = true;
@@ -173,11 +252,11 @@ cc.Class({
                         if (this.tiles[row][col1 - 1] == null) {
                             this.tiles[row][col1 - 1] = this.tiles[row][col1];
                             this.tiles[row][col1] = null;
-                            this.tiles[row][col1 - 1].moveTo(row, col1 - 1);
+                            this.setTilePosition(this.tiles[row][col1 - 1], row, col1 - 1);
                             isMoved = true;
-                        } else if (this.tiles[row][col1 - 1].num == this.tiles[row][col1].num) {// 合并
-                            this.tiles[row][col1 - 1].num = parseInt(this.tiles[row][col1].num) * 2;
-                            this.tiles[row][col1 - 1].updateNum();
+                        } else if (this.tiles[row][col1 - 1].level == this.tiles[row][col1].level) {// 合并
+                            this.tiles[row][col1 - 1].level += 1;
+                            this.tiles[row][col1 - 1].updateLevel();
                             this.tiles[row][col1].removeFromParent();
                             this.tiles[row][col1] = null;
                             isMoved = true;
@@ -202,11 +281,11 @@ cc.Class({
                         if (this.tiles[row][col1 + 1] == null) {
                             this.tiles[row][col1 + 1] = this.tiles[row][col1];
                             this.tiles[row][col1] = null;
-                            this.tiles[row][col1 + 1].moveTo(row, col1 + 1);
+                            this.setTilePosition(this.tiles[row][col1 + 1], row, col1 + 1);
                             isMoved = true;
-                        } else if (this.tiles[row][col1 + 1].num == this.tiles[row][col1].num) {// 合并
-                            this.tiles[row][col1 + 1].num = parseInt(this.tiles[row][col1].num) * 2;
-                            this.tiles[row][col1 + 1].updateNum();
+                        } else if (this.tiles[row][col1 + 1].level == this.tiles[row][col1].level) {// 合并
+                            this.tiles[row][col1 + 1].level += 1;
+                            this.tiles[row][col1 + 1].updateLevel();
                             this.tiles[row][col1].removeFromParent();
                             this.tiles[row][col1] = null;
                             isMoved = true;

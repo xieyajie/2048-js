@@ -317,13 +317,19 @@
     "background": {
       "__id__": 6
     },
-    "tiles": [],
-    "manager": null,
     "mapBackground": {
       "__id__": 5
     },
     "labelBackground": {
       "__uuid__": "a85e29ee-264d-4828-a87b-c163ea239e27"
-    }
+    },
+    "manager": null,
+    "tiles": [],
+    "tile": {
+      "__uuid__": "ca88481e-27b8-4562-b9e7-67a80037c013"
+    },
+    "tileOriginX": 0,
+    "tileOriginY": 0,
+    "tileSpace": 10
   }
 ]

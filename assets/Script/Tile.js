@@ -26,20 +26,19 @@ cc.Class({
     setLevel:function(toLevel) {
         this.level = toLevel;
 
-        var Manager = require("Manager");
-        var bgColor = Manager.colorForLevel(toLevel);
-        this.node.setColor(bgColor);
-
-        var textColor = Manager.textColorForLevel(toLevel);
-        this.label.node.color = textColor;
-
-        var num = Math.pow(Manager.cardinality, (toLevel + 1));
-        this.label.string = num.toString();
+        this.updateLevel();
     },
 
-    moveTo: function (row, col) {
-        this.row = row;
-        this.col = col;
-    }
+    updateLevel:function () {
+        var Manager = require("Manager");
+        var bgColor = Manager.colorForLevel(this.level);
+        this.node.setColor(bgColor);
+
+        var textColor = Manager.textColorForLevel(this.level);
+        this.label.node.color = textColor;
+
+        var num = Math.pow(Manager.cardinality, (this.level + 1));
+        this.label.string = num.toString();
+    },
     
 });
