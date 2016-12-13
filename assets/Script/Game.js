@@ -37,13 +37,22 @@ cc.Class({
      * 初始化游戏背景
      */
     setupMapBackground: function () {
+        this.background.node.color = this.manager.backgroundColor();
+        this.mapBackground.node.color = this.manager.scoreBoardColor();
+
         let bgSize = this.mapBackground.node.width;
         let labelInstance = cc.instantiate(this.labelBackground);
         let labelSize = labelInstance.width;
 
-        let spaceSize = (bgSize - (4 * labelSize)) / 5;
-        for (let i = 0; i < 4; i++) {
-            for (let j = 0; j < 4; j++) {
+        this.manager.tileSize.width = labelSize;
+        this.manager.tileSize.height = labelSize;
+
+        let rows = this.manager.getRowCount();
+        let cols = this.manager.getColCount();
+
+        let spaceSize = (bgSize - (cols * labelSize)) / (cols + 1);
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
                 let origin = -(bgSize / 2) + (labelSize / 2);
                 let x = origin + spaceSize + i * (spaceSize + labelSize);
                 let y = origin + spaceSize + j * (spaceSize + labelSize);
