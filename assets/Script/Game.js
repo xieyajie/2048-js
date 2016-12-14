@@ -15,6 +15,9 @@ cc.Class({
         tileOriginX: 0,
         tileOriginY: 0,
         tileSpace: 10,
+
+        score: 0,
+        scoreLabel: cc.Label,
     },
 
     // use this for initialization
@@ -117,6 +120,24 @@ cc.Class({
         }
     },
 
+    /**
+     * 增加分数
+     */
+    addScore: function (add) {
+        this.score += add;
+
+        this.scoreLabel.string = this.score.toString();
+    },
+
+    /**
+     * 清空分数
+     */
+    clearScore: function () {
+        this.score = 0;
+
+        this.scoreLabel.string = this.score.toString();
+    },
+
     createRandomTile: function () {
         var isCreated = true;
 
@@ -213,6 +234,11 @@ cc.Class({
                             let nextNode = nextTile.getComponent('Tile');
                             // 他们点数一样，应该合并，然后结束移动
                             if (nextNode.tag == curNode.tag) {
+                                // 更新分数
+                                let Manager = require("Manager");
+                                let add = Math.pow(Manager.cardinality, curNode.tag+1);
+                                this.addScore(add);
+
                                 // 合并
                                 nextNode.tag += 1;
                                 nextNode.updateTag();
