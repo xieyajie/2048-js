@@ -146,93 +146,250 @@ cc.Class({
         return isCreated;
     },
 
+    mergeTiles: function (tile, toTile) {
+        
+    },
+
+    moveTilePosition: function (tile, fromRow, fromCol, toRow, toCol) {
+        this.tiles[toRow][toCol] = tile;
+        this.tiles[fromRow][fromCol] = null;
+        this.setTilePosition(tile, toRow, toCol);
+    },
+
     moveUp: function () {
-        return this.moveTile(function (i, j) {
-            return [3-i, j];
-        }, function (row, col) {
-            return [(row + 1 >= 4) ? -1 : (row + 1), col];
-        });
+        // return this.moveTile(function (i, j) {
+        //     return [3-i, j];
+        // }, function (row, col) {
+        //     return [(row + 1 >= 4) ? -1 : (row + 1), col];
+        // });
+
+        let rowsCount = this.manager.getRowCount();
+        let colsCount = this.manager.getColCount();
+        return this.moveVertically(colsCount, rowsCount,
+            function (fromRow) {
+                return (rowsCount - 1 - fromRow);
+            }
+        );
     },
 
     moveDown: function () {
-        return this.moveTile(function (i, j) {
-            return [i, j];
-        }, function (row, col) {
-            return [(row -1 < 0) ? -1 : (row - 1), col];
-        });
+        // return this.moveTile(function (i, j) {
+        //     return [i, j];
+        // }, function (row, col) {
+        //     return [(row -1 < 0) ? -1 : (row - 1), col];
+        // });
+
+        let rowsCount = this.manager.getRowCount();
+        let colsCount = this.manager.getColCount();
+        return this.moveVertically(colsCount, rowsCount,
+            function (fromRow) {
+                return fromRow;
+            }
+        );
     },
 
     moveLeft: function () {
-        return this.moveTile(function (i, j) {
-            return [j, i];
-        }, function (row, col) {
-            return [row, (col - 1 < 0) ? -1 : (col - 1)];
-        });
+        // return this.moveTile(function (i, j) {
+        //     return [j, i];
+        // }, function (row, col) {
+        //     return [row, (col - 1 < 0) ? -1 : (col - 1)];
+        // });
+
+        let rowsCount = this.manager.getRowCount();
+        let colsCount = this.manager.getColCount();
+        return this.moveHorizontally(rowsCount, colsCount,
+            function (fromCol) {
+                return fromCol;
+            }
+        );
     },
 
     moveRight: function () {
-        return this.moveTile(function (i, j) {
-            return [j, 3-i];
-        }, function (row, col) {
-            return [row, (col + 1 >= 4) ? -1 : (col + 1)];
-        });
+        // return this.moveTile(function (i, j) {
+        //     return [j, 3-i];
+        // }, function (row, col) {
+        //     return [row, (col + 1 >= 4) ? -1 : (col + 1)];
+        // });
+
+        let rowsCount = this.manager.getRowCount();
+        let colsCount = this.manager.getColCount();
+        return this.moveHorizontally(rowsCount, colsCount,
+            function (fromCol) {
+                return (colsCount - 1 - fromCol);
+            }
+        );
     },
 
-    moveTile: function (getRowColIndex, getNextRowColIndex) {
+    //竖向
+    moveVertically: function (outerCount, innerCount, getRealRow) {
         let isMoved = false;
 
-        for (let i = 0; i < 4; i++) {
-            for (let j = 0; j < 4; j++) {
-                let [row, col] = getRowColIndex(i, j);
-                // 这个位置上有东西
-                let tile = this.tiles[row][col];
-                if (tile != null) {
+        for (var col = 0; col < outerCount; col++) {
+            //比较节点
+            var tagRow = 0;
+            var tagTile = this.tiles[getRealRow(tagRow)][col];
 
-                    // 接下来向一个方向一直移动 tile
-                    let lastRow = row;
-                    let lastCol = col;
-                    let [nextRow, nextCol] = getNextRowColIndex(lastRow, lastCol);
-                    // 注意越界条件
-                    while (nextRow != -1 && nextCol != -1) {
-                        let nextTile = this.tiles[nextRow][nextCol];
-                        // 前方没有东西
-                        if (nextTile == null) {
-                            this.tiles[nextRow][nextCol] = tile;
-                            this.tiles[lastRow][lastCol] = null;
-                            this.setTilePosition(tile, nextRow, nextCol);
-                            isMoved = true;
-
-                            // 准备下次循环
-                            lastRow = nextRow;
-                            lastCol = nextCol;
-                            [nextRow, nextCol] = getNextRowColIndex(lastRow, lastCol);
-                        }
-                        // 前方有东西
-                        else {
-                            let curNode = tile.getComponent('Tile');
-                            let nextNode = nextTile.getComponent('Tile');
-                            // 他们点数一样，应该合并，然后结束移动
-                            if (nextNode.tag == curNode.tag) {
-                                // 合并
-                                nextNode.tag += 1;
-                                nextNode.updateTag();
-
-                                // 删除没有用的节点
-                                tile.removeFromParent();
-                                this.tiles[lastRow][lastCol] = null;
-
-                                break;
-                            }
-                            // 点数不同，移动结束
-                            else {
-                                break;
-                            }
-                        }
-                    }
+            for (var row = 1; row < innerCount; row++) {
+                let realRow = getRealRow(row);
+                var tile = this.tiles[realRow][col];
+                if (tile == null) {
+                    continue;
                 }
+
+                if (tagTile == null) {
+                    this.moveTilePosition(tile, realRow, col, getRealRow(tagRow), col);
+                    tagTile = tile;
+                    isMoved = true;
+                    continue;
+                }
+
+                let tagNode = tagTile.getComponent('Tile');
+                let curNode = tile.getComponent('Tile');
+                let tmpRow = getRealRow(tagRow + 1);
+
+                if (tagNode.tag != curNode.tag) {
+                    if (realRow != tmpRow) {
+                        this.moveTilePosition(tile, realRow, col, tmpRow, col);
+                        tagRow++;
+                        isMoved = true;
+                    } else {
+                        tagRow = row;
+                    }
+                    tagTile = tile;
+                } else {
+                    // 合并
+                    tagNode.tag += 1;
+                    tagNode.updateTag();
+
+                    // 删除没有用的节点
+                    tile.removeFromParent();
+                    this.tiles[realRow][col] = null;
+
+                    //更新比较节点
+                    tagRow++;
+                    tagTile = this.tiles[getRealRow(tagRow)][col];
+
+                    isMoved = true;
+                }
+
             }
         }
 
         return isMoved;
     },
+
+    //横向
+    moveHorizontally: function (outerCount, innerCount, getRealCol) {
+        let isMoved = false;
+
+        for (var row = 0; row < outerCount; row++) {
+            //比较节点
+            var tagCol = 0;
+            var tagTile = this.tiles[row][getRealCol(tagCol)];
+
+            for (var col = 1; col < innerCount; col++) {
+                let realCol = getRealCol(col);
+                var tile = this.tiles[row][realCol];
+                if (tile == null) {
+                    continue;
+                }
+
+                if (tagTile == null) {
+                    this.moveTilePosition(tile, row, realCol, row, getRealCol(tagCol));
+                    tagTile = tile;
+                    isMoved = true;
+                    continue;
+                }
+
+                let tagNode = tagTile.getComponent('Tile');
+                let curNode = tile.getComponent('Tile');
+                let tmpCol = getRealCol(tagCol + 1);
+
+                if (tagNode.tag != curNode.tag) {
+                    if (realCol != tmpCol) {
+                        this.moveTilePosition(tile, row, realCol, row, tmpCol);
+                        tagCol++;
+                        isMoved = true;
+                    } else {
+                        tagCol = col;
+                    }
+                    tagTile = tile;
+                } else {
+                    // 合并
+                    tagNode.tag += 1;
+                    tagNode.updateTag();
+
+                    // 删除没有用的节点
+                    tile.removeFromParent();
+                    this.tiles[row][realCol] = null;
+
+                    //更新比较节点
+                    tagCol++;
+                    tagTile = this.tiles[row][getRealCol(tagCol)];
+                    isMoved = true;
+                }
+
+            }
+        }
+
+        return isMoved;
+    },
+
+    // moveTile: function (getRowColIndex, getNextRowColIndex) {
+    //     let isMoved = false;
+    //     let rowsCount = this.manager.getRowCount();
+    //     let colsCount = this.manager.getColCount();
+    //
+    //     for (let i = 0; i < rowsCount; i++) {
+    //         for (let j = 0; j < colsCount; j++) {
+    //             let [row, col] = getRowColIndex(i, j);
+    //             // 这个位置上有东西
+    //             let tile = this.tiles[row][col];
+    //             if (tile != null) {
+    //
+    //                 // 接下来向一个方向一直移动 tile
+    //                 let lastRow = row;
+    //                 let lastCol = col;
+    //                 let [nextRow, nextCol] = getNextRowColIndex(lastRow, lastCol);
+    //                 // 注意越界条件
+    //                 while (nextRow != -1 && nextCol != -1) {
+    //                     let nextTile = this.tiles[nextRow][nextCol];
+    //                     // 前方没有东西
+    //                     if (nextTile == null) {
+    //                         this.moveTilePosition(tile, lastRow, lastCol, nextRow, nextCol);
+    //                         isMoved = true;
+    //
+    //                         // 准备下次循环
+    //                         lastRow = nextRow;
+    //                         lastCol = nextCol;
+    //                         [nextRow, nextCol] = getNextRowColIndex(lastRow, lastCol);
+    //                     }
+    //                     // 前方有东西
+    //                     else {
+    //                         let curNode = tile.getComponent('Tile');
+    //                         let nextNode = nextTile.getComponent('Tile');
+    //                         // 他们点数一样，应该合并，然后结束移动
+    //                         if (nextNode.tag == curNode.tag) {
+    //                             // 合并
+    //                             nextNode.tag += 1;
+    //                             nextNode.updateTag();
+    //
+    //                             // 删除没有用的节点
+    //                             tile.removeFromParent();
+    //                             this.tiles[lastRow][lastCol] = null;
+    //
+    //                             break;
+    //                         }
+    //                         // 点数不同，移动结束
+    //                         else {
+    //                             break;
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    //
+    //     return isMoved;
+    // },
 });
