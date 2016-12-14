@@ -278,6 +278,11 @@ cc.Class({
                     }
                     tagTile = tile;
                 } else {
+                    // 加分
+                    let Manager = require("Manager");
+                    let addScore = Math.pow(Manager.cardinality, curNode.tag + 1);
+                    this.addScore(addScore);
+
                     // 合并
                     tagNode.tag += 1;
                     tagNode.updateTag();
@@ -336,6 +341,11 @@ cc.Class({
                     }
                     tagTile = tile;
                 } else {
+                    // 加分
+                    let Manager = require("Manager");
+                    let addScore = Math.pow(Manager.cardinality, curNode.tag + 1);
+                    this.addScore(addScore);
+
                     // 合并
                     tagNode.tag += 1;
                     tagNode.updateTag();
