@@ -15,6 +15,9 @@ cc.Class({
         tileOriginX: 0,
         tileOriginY: 0,
         tileSpace: 10,
+
+        score: 0,
+        scoreLabel: cc.Label,
     },
 
     // use this for initialization
@@ -115,6 +118,24 @@ cc.Class({
         if (isMoved) {
             this.createRandomTile();
         }
+    },
+
+    /**
+     * 增加分数
+     */
+    addScore: function (add) {
+        this.score += add;
+
+        this.scoreLabel.string = this.score.toString();
+    },
+
+    /**
+     * 清空分数
+     */
+    clearScore: function () {
+        this.score = 0;
+
+        this.scoreLabel.string = this.score.toString();
     },
 
     createRandomTile: function () {
