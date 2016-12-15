@@ -3,6 +3,7 @@ cc.Class({
 
     statics: {
         cardinality: 2,
+        order: 4,
 
         tileSize:{
             width: 130,
@@ -90,31 +91,11 @@ cc.Class({
         },
 
         getRowCount:function () {
-            var num = 4;
-            switch (this.cardinality) {
-                case 3:
-                    num = 3;
-                    break;
-                case 5:
-                    num = 5;
-                    break;
-            }
-
-            return num;
+            return this.order;
         },
 
         getColCount:function () {
-            var num = 4;
-            switch (this.cardinality) {
-                case 3:
-                    num = 3;
-                    break;
-                case 5:
-                    num = 5;
-                    break;
-            }
-
-            return num;
+            return this.order;
         }
         
     }

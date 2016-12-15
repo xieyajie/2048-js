@@ -16,6 +16,8 @@ cc.Class({
         tileOriginY: 0,
         tileSpace: 10,
 
+        maxNumLabel: cc.Label,
+        describeLabel: cc.Label,
         score: 0,
         scoreLabel: cc.Label,
         bestScore: 0,
@@ -49,20 +51,35 @@ cc.Class({
      */
     setupTiles: function () {
         this.manager = require("Manager");
-        if (this.manager.cardinality == 2) {
+        if (this.manager.order == 3) {
+            this.tiles = [
+                [null, null, null],
+                [null, null, null],
+                [null, null, null]
+            ];
+            this.maxNumLabel.string = "1024";
+            this.describeLabel.string = "Join the numbers\nto get to 1024";
+        } else if (this.manager.order == 4) {
             this.tiles = [
                 [null, null, null, null],
                 [null, null, null, null],
                 [null, null, null, null],
                 [null, null, null, null]
             ];
-        } else if (this.manager.cardinality == 3) {
+            this.maxNumLabel.string = "2048";
+            this.describeLabel.string = "Join the numbers\nto get to 2048";
+        } else if (this.manager.order == 5) {
             this.tiles = [
-                [null, null, null],
-                [null, null, null],
-                [null, null, null]
+                [null, null, null, null, null],
+                [null, null, null, null, null],
+                [null, null, null, null, null],
+                [null, null, null, null, null],
+                [null, null, null, null, null]
             ];
+            this.maxNumLabel.string = "8192";
+            this.describeLabel.string = "Join the numbers\nto get to 8192";
         }
+
     },
 
     /**
