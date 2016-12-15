@@ -18,6 +18,8 @@ cc.Class({
 
         score: 0,
         scoreLabel: cc.Label,
+        bestScore: 0,
+        bestScoreLabel: cc.Label,
     },
 
     // use this for initialization
@@ -37,6 +39,12 @@ cc.Class({
                 [null, null, null]
             ];
         }
+
+        let storageBestScore = cc.sys.localStorage.getItem('bestScore');
+        if (!storageBestScore) {
+            storageBestScore = 0;
+        }
+        this.updateBestScore(storageBestScore);
 
         this.setupMapBackground();
         this.setupEventListener();
@@ -127,6 +135,10 @@ cc.Class({
         this.score += add;
 
         this.scoreLabel.string = this.score.toString();
+
+        if (this.score > this.bestScore) {
+            this.updateBestScore(this.score);
+        }
     },
 
     /**
@@ -136,6 +148,17 @@ cc.Class({
         this.score = 0;
 
         this.scoreLabel.string = this.score.toString();
+    },
+
+    /**
+     * 更新最高分数
+     * @param newBestScore
+     */
+    updateBestScore: function (newBestScore) {
+        this.bestScore = newBestScore;
+        this.bestScoreLabel.string = this.bestScore.toString();
+
+        cc.sys.localStorage.setItem('bestScore', this.bestScore);
     },
 
     createRandomTile: function () {
