@@ -5,23 +5,56 @@ cc.Class({
         cardinality: 2,
         order: 4,
 
-        tileSize:{
+        tileSize: {
             width: 130,
             height: 130
         },
 
+        /**
+         * 游戏主界面背景颜色
+         * @returns {Color}
+         */
         backgroundColor: function () {
             return cc.color(250, 248, 239, 255);
         },
 
+        /**
+         * 计分板背景颜色
+         * @returns {Color}
+         */
         scoreBoardColor: function () {
             return cc.color(187, 173, 160, 255);
         },
 
+        /**
+         * 计分板上提示文字的颜色
+         * @returns {Color}
+         */
+        socreHintColor: function () {
+            return cc.color(235, 231, 227, 255);
+        },
+
+        /**
+         * 计分板上主显文字的颜色
+         * @returns {Color}
+         */
+        socreLabelColor: function () {
+            return cc.color(255, 255, 255, 255);
+        },
+
+        /**
+         * 按钮颜色
+         * @returns {Color}
+         */
         buttonColor: function () {
             return cc.color(119, 110, 101, 255);
         },
 
+        /**
+         * 游戏卡片的各个分数对应的颜色
+         * @param tag
+         * @returns {Color}
+         */
         colorForTag: function (tag) {
             var retColor = cc.color(255, 255, 255, 255);
 
@@ -75,7 +108,11 @@ cc.Class({
             return retColor;
         },
 
-
+        /**
+         * 各个分数卡片文字对应的颜色
+         * @param tag
+         * @returns {Color}
+         */
         textColorForTag: function (tag) {
             var retColor = cc.color(255, 255, 255, 255);
 
