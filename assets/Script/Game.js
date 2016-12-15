@@ -24,21 +24,7 @@ cc.Class({
 
     // use this for initialization
     onLoad: function () {
-        this.manager = require("Manager");
-        if (this.manager.cardinality == 2) {
-            this.tiles = [
-                [null, null, null, null],
-                [null, null, null, null],
-                [null, null, null, null],
-                [null, null, null, null]
-            ];
-        } else if (this.manager.cardinality == 3) {
-            this.tiles = [
-                [null, null, null],
-                [null, null, null],
-                [null, null, null]
-            ];
-        }
+        this.setupTiles();
 
         let storageBestScore = cc.sys.localStorage.getItem('bestScore');
         if (!storageBestScore) {
@@ -56,6 +42,27 @@ cc.Class({
         tile.setPosition(x, y);
         tile.row = toRow;
         tile.col = toCol;
+    },
+
+    /**
+     * 初始化主地图数据
+     */
+    setupTiles: function () {
+        this.manager = require("Manager");
+        if (this.manager.cardinality == 2) {
+            this.tiles = [
+                [null, null, null, null],
+                [null, null, null, null],
+                [null, null, null, null],
+                [null, null, null, null]
+            ];
+        } else if (this.manager.cardinality == 3) {
+            this.tiles = [
+                [null, null, null],
+                [null, null, null],
+                [null, null, null]
+            ];
+        }
     },
 
     /**
@@ -159,6 +166,17 @@ cc.Class({
         this.bestScoreLabel.string = this.bestScore.toString();
 
         cc.sys.localStorage.setItem('bestScore', this.bestScore);
+    },
+
+    /**
+     * restart 按钮的监听
+     */
+    handleRestart: function () {
+        this.setupTiles();
+        this.setupMapBackground();
+
+        this.score = 0;
+        this.scoreLabel.string = this.score.toString();
     },
 
     createRandomTile: function () {
