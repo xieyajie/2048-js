@@ -197,7 +197,8 @@ cc.Class({
     },
 
     createRandomTile: function () {
-        var isCreated = true;
+        var isCreated = false;
+
 
         var count = 0;
         let rows = this.manager.getRowCount();
@@ -206,7 +207,10 @@ cc.Class({
         var row;
         var col;
         while (true) {
-            count++;
+            if (count >= totalCount) {// 格子满了
+                break;
+            }
+
             row = Math.floor(Math.random() * rows);
             col = Math.floor(Math.random() * cols);
             if (this.tiles[row][col] == null) {
@@ -214,12 +218,11 @@ cc.Class({
                 this.tiles[row][col] = tile;
                 this.setTilePosition(tile, row, col);
                 this.mapBackground.node.addChild(tile);
+                isCreated = true;
                 break;
             }
-            if (count >= totalCount) {// 格子满了
-                isCreated = false;
-                break;
-            }
+
+            count++;
         }
 
         return isCreated;
