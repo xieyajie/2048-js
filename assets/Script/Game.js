@@ -199,7 +199,6 @@ cc.Class({
     createRandomTile: function () {
         var isCreated = false;
 
-
         var count = 0;
         let rows = this.manager.getRowCount();
         let cols = this.manager.getColCount();
@@ -255,12 +254,6 @@ cc.Class({
     },
 
     moveDown: function () {
-        // return this.moveTile(function (i, j) {
-        //     return [i, j];
-        // }, function (row, col) {
-        //     return [(row -1 < 0) ? -1 : (row - 1), col];
-        // });
-
         let rowsCount = this.manager.getRowCount();
         let colsCount = this.manager.getColCount();
         return this.moveVertically(colsCount, rowsCount,
@@ -271,12 +264,6 @@ cc.Class({
     },
 
     moveLeft: function () {
-        // return this.moveTile(function (i, j) {
-        //     return [j, i];
-        // }, function (row, col) {
-        //     return [row, (col - 1 < 0) ? -1 : (col - 1)];
-        // });
-
         let rowsCount = this.manager.getRowCount();
         let colsCount = this.manager.getColCount();
         return this.moveHorizontally(rowsCount, colsCount,
@@ -287,12 +274,6 @@ cc.Class({
     },
 
     moveRight: function () {
-        // return this.moveTile(function (i, j) {
-        //     return [j, 3-i];
-        // }, function (row, col) {
-        //     return [row, (col + 1 >= 4) ? -1 : (col + 1)];
-        // });
-
         let rowsCount = this.manager.getRowCount();
         let colsCount = this.manager.getColCount();
         return this.moveHorizontally(rowsCount, colsCount,
@@ -427,61 +408,4 @@ cc.Class({
         return isMoved;
     },
 
-    // moveTile: function (getRowColIndex, getNextRowColIndex) {
-    //     let isMoved = false;
-    //     let rowsCount = this.manager.getRowCount();
-    //     let colsCount = this.manager.getColCount();
-    //
-    //     for (let i = 0; i < rowsCount; i++) {
-    //         for (let j = 0; j < colsCount; j++) {
-    //             let [row, col] = getRowColIndex(i, j);
-    //             // 这个位置上有东西
-    //             let tile = this.tiles[row][col];
-    //             if (tile != null) {
-    //
-    //                 // 接下来向一个方向一直移动 tile
-    //                 let lastRow = row;
-    //                 let lastCol = col;
-    //                 let [nextRow, nextCol] = getNextRowColIndex(lastRow, lastCol);
-    //                 // 注意越界条件
-    //                 while (nextRow != -1 && nextCol != -1) {
-    //                     let nextTile = this.tiles[nextRow][nextCol];
-    //                     // 前方没有东西
-    //                     if (nextTile == null) {
-    //                         this.moveTilePosition(tile, lastRow, lastCol, nextRow, nextCol);
-    //                         isMoved = true;
-    //
-    //                         // 准备下次循环
-    //                         lastRow = nextRow;
-    //                         lastCol = nextCol;
-    //                         [nextRow, nextCol] = getNextRowColIndex(lastRow, lastCol);
-    //                     }
-    //                     // 前方有东西
-    //                     else {
-    //                         let curNode = tile.getComponent('Tile');
-    //                         let nextNode = nextTile.getComponent('Tile');
-    //                         // 他们点数一样，应该合并，然后结束移动
-    //                         if (nextNode.tag == curNode.tag) {
-    //                             // 合并
-    //                             nextNode.tag += 1;
-    //                             nextNode.updateTag();
-    //
-    //                             // 删除没有用的节点
-    //                             tile.removeFromParent();
-    //                             this.tiles[lastRow][lastCol] = null;
-    //
-    //                             break;
-    //                         }
-    //                         // 点数不同，移动结束
-    //                         else {
-    //                             break;
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    //
-    //     return isMoved;
-    // },
 });
