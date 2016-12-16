@@ -38,10 +38,17 @@ cc.Class({
         this.setupEventListener();
     },
 
-    setTilePosition: function (tile, toRow, toCol) {
+    setTilePosition: function (tile, toRow, toCol, animated) {
         let x = this.tileOriginX + this.tileSpace + toCol * (this.tileSpace + this.manager.tileSize.width);
         let y = this.tileOriginY + this.tileSpace + toRow * (this.tileSpace + this.manager.tileSize.height);
-        tile.setPosition(x, y);
+
+        if (animated) {
+            let moveTo = cc.moveTo(0.35, cc.p(x, y));
+            tile.runAction(moveTo);
+        } else {
+            tile.setPosition(x, y);
+        }
+
         tile.row = toRow;
         tile.col = toCol;
     },
@@ -106,7 +113,7 @@ cc.Class({
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < cols; j++) {
                 let label = cc.instantiate(this.labelBackground);
-                this.setTilePosition(label, i, j);
+                this.setTilePosition(label, i, j, false);
                 this.mapBackground.node.addChild(label);
             }
         }
@@ -215,7 +222,7 @@ cc.Class({
             if (this.tiles[row][col] == null) {
                 var tile = cc.instantiate(this.tile);
                 this.tiles[row][col] = tile;
-                this.setTilePosition(tile, row, col);
+                this.setTilePosition(tile, row, col, false);
                 this.mapBackground.node.addChild(tile);
                 isCreated = true;
                 break;
@@ -234,7 +241,7 @@ cc.Class({
     moveTilePosition: function (tile, fromRow, fromCol, toRow, toCol) {
         this.tiles[toRow][toCol] = tile;
         this.tiles[fromRow][fromCol] = null;
-        this.setTilePosition(tile, toRow, toCol);
+        this.setTilePosition(tile, toRow, toCol, true);
     },
 
     moveUp: function () {
