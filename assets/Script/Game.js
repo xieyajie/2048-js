@@ -5,6 +5,7 @@ cc.Class({
         background: cc.Sprite,
         mapBackground: cc.Sprite,
         labelBackground: cc.Prefab,
+        overView: cc.Prefab,
 
         manager: {
             default: null
@@ -22,6 +23,10 @@ cc.Class({
         scoreLabel: cc.Label,
         bestScore: 0,
         bestScoreLabel: cc.Label,
+        currentOverView: {
+            default: null,
+            type: cc.Sprite
+        }
     },
 
     // use this for initialization
@@ -36,6 +41,8 @@ cc.Class({
 
         this.setupMapBackground();
         this.setupEventListener();
+
+        this.showOverView();
     },
 
     setTilePosition: function (tile, toRow, toCol, animated) {
@@ -43,7 +50,7 @@ cc.Class({
         let y = this.tileOriginY + this.tileSpace + toRow * (this.tileSpace + this.manager.tileSize.height);
 
         if (animated) {
-            let moveTo = cc.moveTo(0.35, cc.p(x, y));
+            let moveTo = cc.moveTo(0.2, cc.p(x, y));
             tile.runAction(moveTo);
         } else {
             tile.setPosition(x, y);
@@ -122,6 +129,13 @@ cc.Class({
         this.createRandomTile();
     },
 
+    showOverView: function () {
+        if (this.currentOverView == null) {
+            this.currentOverView = cc.instantiate(this.overView);
+        }
+        this.background.node.addChild(this.currentOverView);
+    },
+
     /**
      * 初始化系统事件监听
      */
@@ -155,7 +169,11 @@ cc.Class({
         }
 
         if (isMoved) {
-            this.createRandomTile();
+            cc.delayTime(0.5);
+            let isCreated = this.createRandomTile();
+            if (!isCreated) {
+
+            }
         }
     },
 
@@ -196,6 +214,10 @@ cc.Class({
      * restart 按钮的监听
      */
     handleRestart: function () {
+        if (this.currentOverView) {
+            this.currentOverView.removeFromParent();
+        }
+
         this.setupTiles();
         this.setupMapBackground();
 
@@ -245,12 +267,6 @@ cc.Class({
     },
 
     moveUp: function () {
-        // return this.moveTile(function (i, j) {
-        //     return [3-i, j];
-        // }, function (row, col) {
-        //     return [(row + 1 >= 4) ? -1 : (row + 1), col];
-        // });
-
         let rowsCount = this.manager.getRowCount();
         let colsCount = this.manager.getColCount();
         return this.moveVertically(colsCount, rowsCount,

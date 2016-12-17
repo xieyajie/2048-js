@@ -1567,6 +1567,9 @@
     "labelBackground": {
       "__uuid__": "a85e29ee-264d-4828-a87b-c163ea239e27"
     },
+    "overView": {
+      "__uuid__": "252d7e7c-92d6-4e06-bdbc-b6b09186c577"
+    },
     "manager": null,
     "tiles": [],
     "tile": {
@@ -1588,6 +1591,7 @@
     "bestScore": 0,
     "bestScoreLabel": {
       "__id__": 30
-    }
+    },
+    "currentOverView": null
   }
 ]
