@@ -322,11 +322,11 @@ cc.Class({
                     continue;
                 }
 
-                let tagNode = tagTile.getComponent('Tile');
-                let curNode = tile.getComponent('Tile');
+                let tagTileScript = tagTile.getComponent('Tile');
+                let curTileScript = tile.getComponent('Tile');
                 let tmpRow = getRealRow(tagRow + 1);
 
-                if (tagNode.tag != curNode.tag) {
+                if (tagTileScript.tag != curTileScript.tag) {
                     if (realRow != tmpRow) {
                         this.moveTilePosition(tile, realRow, col, tmpRow, col);
                         tagRow++;
@@ -338,12 +338,12 @@ cc.Class({
                 } else {
                     // 加分
                     let Manager = require("Manager");
-                    let addScore = Math.pow(Manager.cardinality, curNode.tag + 1);
+                    let addScore = Math.pow(Manager.cardinality, curTileScript.tag + 1);
                     this.addScore(addScore);
 
                     // 合并
-                    tagNode.tag += 1;
-                    tagNode.updateTag();
+                    tagTileScript.tag += 1;
+                    tagTileScript.updateTag();
 
                     // 删除没有用的节点
                     tile.removeFromParent();
@@ -385,11 +385,11 @@ cc.Class({
                     continue;
                 }
 
-                let tagNode = tagTile.getComponent('Tile');
-                let curNode = tile.getComponent('Tile');
+                let tagTileScript = tagTile.getComponent('Tile');
+                let curTileScript = tile.getComponent('Tile');
                 let tmpCol = getRealCol(tagCol + 1);
 
-                if (tagNode.tag != curNode.tag) {
+                if (tagTileScript.tag != curTileScript.tag) {
                     if (realCol != tmpCol) {
                         this.moveTilePosition(tile, row, realCol, row, tmpCol);
                         tagCol++;
@@ -401,12 +401,12 @@ cc.Class({
                 } else {
                     // 加分
                     let Manager = require("Manager");
-                    let addScore = Math.pow(Manager.cardinality, curNode.tag + 1);
+                    let addScore = Math.pow(Manager.cardinality, curTileScript.tag + 1);
                     this.addScore(addScore);
 
                     // 合并
-                    tagNode.tag += 1;
-                    tagNode.updateTag();
+                    tagTileScript.tag += 1;
+                    tagTileScript.updateTag();
 
                     // 删除没有用的节点
                     tile.removeFromParent();
