@@ -41,8 +41,6 @@ cc.Class({
 
         this.setupMapBackground();
         this.setupEventListener();
-
-        this.showOverView();
     },
 
     setTilePosition: function (tile, toRow, toCol, animated) {
@@ -172,7 +170,7 @@ cc.Class({
             cc.delayTime(0.5);
             let isCreated = this.createRandomTile();
             if (!isCreated) {
-
+                this.showOverView();
             }
         }
     },

@@ -226,7 +226,7 @@
     "_tag": -1,
     "_opacityModifyRGB": false,
     "_id": "c9899o1eANGnpck82eBLD/2",
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 7
@@ -440,7 +440,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": -228.62,
+      "x": -227.24,
       "y": 400
     },
     "_skewX": 0,
@@ -491,10 +491,10 @@
     "node": {
       "__id__": 10
     },
-    "_enabled": true,
+    "_enabled": false,
     "isAlignOnce": true,
     "_alignFlags": 9,
-    "_left": 32.06999999999999,
+    "_left": 33.44999999999999,
     "_right": 62.39999999999998,
     "_top": 50,
     "_bottom": 0,
@@ -542,8 +542,8 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": -185.50000000000003,
-      "y": 272.5
+      "x": -176.99999999999997,
+      "y": 273
     },
     "_skewX": 0,
     "_skewY": 0,
@@ -596,9 +596,9 @@
     "_enabled": true,
     "isAlignOnce": true,
     "_alignFlags": 9,
-    "_left": 16.659999999999997,
-    "_right": 0,
-    "_top": 140,
+    "_left": 25.160000000000025,
+    "_right": 409.67,
+    "_top": 139.5,
     "_bottom": 0,
     "_verticalCenter": 0,
     "_horizontalCenter": 0,
@@ -608,7 +608,7 @@
     "_isAbsBottom": true,
     "_isAbsHorizontalCenter": true,
     "_isAbsVerticalCenter": true,
-    "_originalWidth": 0,
+    "_originalWidth": 235.68,
     "_originalHeight": 0
   },
   {
