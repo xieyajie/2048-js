@@ -542,7 +542,7 @@
     "_scaleY": 1,
     "_position": {
       "__type__": "cc.Vec2",
-      "x": -176.99999999999997,
+      "x": -192.35,
       "y": 273
     },
     "_skewX": 0,
@@ -596,7 +596,7 @@
     "_enabled": true,
     "isAlignOnce": true,
     "_alignFlags": 9,
-    "_left": 25.160000000000025,
+    "_left": 9.810000000000016,
     "_right": 409.67,
     "_top": 139.5,
     "_bottom": 0,
@@ -1567,9 +1567,7 @@
     "labelBackground": {
       "__uuid__": "a85e29ee-264d-4828-a87b-c163ea239e27"
     },
-    "overView": {
-      "__uuid__": "252d7e7c-92d6-4e06-bdbc-b6b09186c577"
-    },
+    "overView": null,
     "manager": null,
     "tiles": [],
     "tile": {
@@ -1592,6 +1590,7 @@
     "bestScoreLabel": {
       "__id__": 30
     },
-    "currentOverView": null
+    "currentOverView": null,
+    "animationDuration": 0.1
   }
 ]

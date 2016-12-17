@@ -26,7 +26,9 @@ cc.Class({
         currentOverView: {
             default: null,
             type: cc.Sprite
-        }
+        },
+
+        animationDuration: 0.1,
     },
 
     // use this for initialization
@@ -48,7 +50,7 @@ cc.Class({
         let y = this.tileOriginY + this.tileSpace + toRow * (this.tileSpace + this.manager.tileSize.height);
 
         if (animated) {
-            let moveTo = cc.moveTo(0.2, cc.p(x, y));
+            let moveTo = cc.moveTo(this.animationDuration, cc.p(x, y));
             tile.runAction(moveTo);
         } else {
             tile.setPosition(x, y);
@@ -123,8 +125,8 @@ cc.Class({
             }
         }
 
-        this.createRandomTile();
-        this.createRandomTile();
+        this.createRandomTile(false);
+        this.createRandomTile(false);
     },
 
     showOverView: function () {
@@ -167,8 +169,7 @@ cc.Class({
         }
 
         if (isMoved) {
-            cc.delayTime(0.5);
-            let isCreated = this.createRandomTile();
+            let isCreated = this.createRandomTile(true);
             if (!isCreated) {
                 this.showOverView();
             }
@@ -223,7 +224,7 @@ cc.Class({
         this.scoreLabel.string = this.score.toString();
     },
 
-    createRandomTile: function () {
+    createRandomTile: function (animated) {
         let rows = this.manager.getRowCount();
         let cols = this.manager.getColCount();
         let nullPositions = [];
@@ -241,12 +242,26 @@ cc.Class({
         let randomIndex = Math.floor(Math.random() * nullPositions.length);
         let position = nullPositions[randomIndex];
 
+        if (animated) {
+            let delayAction = cc.delayTime(this.animationDuration+0.1);
+            let callAction = cc.callFunc(this.createTileAtPosition, this, position);
+            let sequenceAction = cc.sequence([delayAction, callAction]);
+            this.node.runAction(sequenceAction);
+        } else {
+            this.createRandomTile(this.node, position)
+        }
+
+        return true;
+    },
+
+    /**
+     * 在指定位置添加 tile
+     */
+    createTileAtPosition: function (sender, position) {
         let tile = cc.instantiate(this.tile);
         this.tiles[position.x][position.y] = tile;
         this.setTilePosition(tile, position.x, position.y);
         this.mapBackground.node.addChild(tile);
-
-        return true;
     },
 
     mergeTiles: function (tile, toTile) {
@@ -254,9 +269,9 @@ cc.Class({
     },
 
     moveTilePosition: function (tile, fromRow, fromCol, toRow, toCol) {
-        this.tiles[toRow][toCol] = tile;
         this.tiles[fromRow][fromCol] = null;
-        this.setTilePosition(tile, toRow, toCol, false);
+        this.tiles[toRow][toCol] = tile;
+        this.setTilePosition(tile, toRow, toCol, true);
     },
 
     moveUp: function () {
@@ -341,13 +356,16 @@ cc.Class({
                     let addScore = Math.pow(Manager.cardinality, curTileScript.tag + 1);
                     this.addScore(addScore);
 
-                    // 合并
-                    tagTileScript.tag += 1;
-                    tagTileScript.updateTag();
+                    // 移动 tile 到最后位置
+                    this.moveTilePosition(tile, realRow, col, tagTile.row, tagTile.col);
+                    // 后边我们继续使用的是 tagTile，tile 会被 remove
+                    this.tiles[tagTile.row][tagTile.col] = tagTile;
 
-                    // 删除没有用的节点
-                    tile.removeFromParent();
-                    this.tiles[realRow][col] = null;
+                    // 合并
+                    let delayAction = cc.delayTime(this.animationDuration);
+                    let callAction = cc.callFunc(this.updateTag, this, tile);
+                    let sequenceAction = cc.sequence([delayAction, callAction]);
+                    tagTile.runAction(sequenceAction);
 
                     //更新比较节点
                     tagRow++;
@@ -404,13 +422,16 @@ cc.Class({
                     let addScore = Math.pow(Manager.cardinality, curTileScript.tag + 1);
                     this.addScore(addScore);
 
-                    // 合并
-                    tagTileScript.tag += 1;
-                    tagTileScript.updateTag();
+                    // 移动 tile 到最后位置
+                    this.moveTilePosition(tile, row, realCol, tagTile.row, tagTile.col);
+                    // 后边我们继续使用的是 tagTile，tile 会被 remove
+                    this.tiles[tagTile.row][tagTile.col] = tagTile;
 
-                    // 删除没有用的节点
-                    tile.removeFromParent();
-                    this.tiles[row][realCol] = null;
+                    // 合并
+                    let delayAction = cc.delayTime(this.animationDuration);
+                    let callAction = cc.callFunc(this.updateTag, this, tile);
+                    let sequenceAction = cc.sequence([delayAction, callAction]);
+                    tagTile.runAction(sequenceAction);
 
                     //更新比较节点
                     tagCol++;
@@ -424,4 +445,11 @@ cc.Class({
         return isMoved;
     },
 
+    updateTag: function (tile, oldTile) {
+        let tileScript = tile.getComponent('Tile');
+        tileScript.tag += 1;
+        tileScript.updateTag();
+
+        oldTile.removeFromParent();
+    },
 });
