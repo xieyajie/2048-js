@@ -204,34 +204,29 @@ cc.Class({
     },
 
     createRandomTile: function () {
-        var isCreated = false;
-
-        var count = 0;
         let rows = this.manager.getRowCount();
         let cols = this.manager.getColCount();
-        let totalCount = rows * cols;
-        var row;
-        var col;
-        while (true) {
-            if (count >= totalCount) {// 格子满了
-                break;
+        let nullPositions = [];
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                if (null == this.tiles[i][j]) {
+                    nullPositions.push(cc.p(i, j));
+                }
             }
-
-            row = Math.floor(Math.random() * rows);
-            col = Math.floor(Math.random() * cols);
-            if (this.tiles[row][col] == null) {
-                var tile = cc.instantiate(this.tile);
-                this.tiles[row][col] = tile;
-                this.setTilePosition(tile, row, col, false);
-                this.mapBackground.node.addChild(tile);
-                isCreated = true;
-                break;
-            }
-
-            count++;
+        }
+        if (nullPositions.size == 0) {
+            return false
         }
 
-        return isCreated;
+        let randomIndex = Math.floor(Math.random() * nullPositions.length);
+        let position = nullPositions[randomIndex];
+
+        let tile = cc.instantiate(this.tile);
+        this.tiles[position.x][position.y] = tile;
+        this.setTilePosition(tile, position.x, position.y);
+        this.mapBackground.node.addChild(tile);
+
+        return true;
     },
 
     mergeTiles: function (tile, toTile) {
@@ -241,7 +236,7 @@ cc.Class({
     moveTilePosition: function (tile, fromRow, fromCol, toRow, toCol) {
         this.tiles[toRow][toCol] = tile;
         this.tiles[fromRow][fromCol] = null;
-        this.setTilePosition(tile, toRow, toCol, true);
+        this.setTilePosition(tile, toRow, toCol, false);
     },
 
     moveUp: function () {
