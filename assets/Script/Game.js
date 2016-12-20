@@ -29,6 +29,9 @@ cc.Class({
         },
 
         animationDuration: 0.1,
+
+        currentMousePositionX: -1,
+        currentMousePositionY: -1
     },
 
     // use this for initialization
@@ -141,6 +144,34 @@ cc.Class({
      */
     setupEventListener: function () {
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+
+        this.mapBackground.node.on(cc.Node.EventType.TOUCH_START, function (event) {
+            let location = event.touch.getLocation();
+            this.currentMousePositionX = location.x;
+            this.currentMousePositionY = location.y;
+        }, this);
+
+        let touchAction = function (event) {
+            let location = event.touch.getLocation();
+            let xMove = location.x - this.currentMousePositionX;
+            let yMove = location.y - this.currentMousePositionY;
+            if (Math.abs(xMove) > Math.abs(yMove)) {
+                if (xMove > 0) {
+                    this.actionForKeyCode(cc.KEY.right);
+                } else {
+                    this.actionForKeyCode(cc.KEY.left);
+                }
+            } else {
+                if (yMove > 0) {
+                    this.actionForKeyCode(cc.KEY.up);
+                } else {
+                    this.actionForKeyCode(cc.KEY.down);
+                }
+            }
+        };
+
+        this.mapBackground.node.on(cc.Node.EventType.TOUCH_END, touchAction, this);
+        this.mapBackground.node.on(cc.Node.EventType.TOUCH_CANCEL, touchAction, this);
     },
 
     /**
@@ -148,8 +179,12 @@ cc.Class({
      * @param event
      */
     onKeyUp: function (event) {
+        this.actionForKeyCode(event.keyCode);
+    },
+
+    actionForKeyCode: function (keyCode) {
         var isMoved = false;
-        switch (event.keyCode) {
+        switch (keyCode) {
             case cc.KEY.up: {
                 isMoved = this.moveUp();
                 break;

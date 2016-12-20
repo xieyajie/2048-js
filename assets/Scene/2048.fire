@@ -1591,6 +1591,8 @@
       "__id__": 30
     },
     "currentOverView": null,
-    "animationDuration": 0.1
+    "animationDuration": 0.1,
+    "currentMousePositionX": -1,
+    "currentMousePositionY": -1
   }
 ]
