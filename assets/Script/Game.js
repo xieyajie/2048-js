@@ -283,7 +283,7 @@ cc.Class({
             let sequenceAction = cc.sequence([delayAction, callAction]);
             this.node.runAction(sequenceAction);
         } else {
-            this.createRandomTile(this.node, position)
+            this.createTileAtPosition(this.node, position)
         }
 
         return true;
