@@ -31,7 +31,9 @@ cc.Class({
         animationDuration: 0.1,
 
         currentMousePositionX: -1,
-        currentMousePositionY: -1
+        currentMousePositionY: -1,
+
+        isAnimation: false,
     },
 
     // use this for initialization
@@ -183,6 +185,10 @@ cc.Class({
     },
 
     actionForKeyCode: function (keyCode) {
+        if (this.isAnimation) {
+            return;
+        }
+
         var isMoved = false;
         switch (keyCode) {
             case cc.KEY.up: {
@@ -204,6 +210,8 @@ cc.Class({
         }
 
         if (isMoved) {
+            this.isAnimation = true;
+
             let isCreated = this.createRandomTile(true);
             if (!isCreated) {
                 this.showOverView();
@@ -285,13 +293,20 @@ cc.Class({
         if (animated) {
             let delayAction = cc.delayTime(this.animationDuration+0.1);
             let callAction = cc.callFunc(this.createTileAtPosition, this, position);
-            let sequenceAction = cc.sequence([delayAction, callAction]);
+            let callFalseAnimationAction = cc.callFunc(this.resetIsAnimation, this);
+            let sequenceAction = cc.sequence([delayAction, callAction, callFalseAnimationAction]);
             this.node.runAction(sequenceAction);
         } else {
-            this.createTileAtPosition(this.node, position)
+            this.createTileAtPosition(this.node, position);
+
+            this.resetIsAnimation();
         }
 
         return true;
+    },
+
+    resetIsAnimation: function () {
+        this.isAnimation = false;
     },
 
     /**
