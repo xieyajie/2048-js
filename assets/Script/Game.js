@@ -208,6 +208,11 @@ cc.Class({
             if (!isCreated) {
                 this.showOverView();
             }
+        } else { //检查是否结束
+            let isOver = this.checkWhetherOver();
+            if (isOver) {
+                this.showOverView();
+            }
         }
     },
 
@@ -287,6 +292,46 @@ cc.Class({
         }
 
         return true;
+    },
+
+    /**
+     * 判断游戏是否结束
+     */
+    checkWhetherOver: function () {
+        let rows = this.manager.getRowCount();
+        let cols = this.manager.getColCount();
+
+        var isOver = true;
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                if (null == this.tiles[i][j]) {
+                    isOver = false;
+                    break;
+                }
+
+                let curTileScript = this.tiles[i][j].getComponent('Tile');
+                var tagTileScript;
+                let tagi = i + 1;
+                if (tagi < rows) {
+                    tagTileScript = this.tiles[tagi][j].getComponent('Tile');
+                    if (tagTileScript.tag == curTileScript.tag) {
+                        isOver = false;
+                        break;
+                    }
+                }
+
+                let tagj = j + 1;
+                if (tagj < cols) {
+                    tagTileScript = this.tiles[i][tagj].getComponent('Tile');
+                    if (tagTileScript.tag == curTileScript.tag) {
+                        isOver = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return isOver;
     },
 
     /**
